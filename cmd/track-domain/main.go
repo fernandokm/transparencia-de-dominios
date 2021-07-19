@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fernandokm/domain-transparency/mapclient"
+	"github.com/fernandokm/transparencia-de-dominios/mapclient"
 )
 
 var (

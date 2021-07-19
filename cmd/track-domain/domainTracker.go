@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fernandokm/domain-transparency/mapclient"
-	ds "github.com/fernandokm/domain-transparency/server"
-	"github.com/fernandokm/domain-transparency/util"
+	"github.com/fernandokm/transparencia-de-dominios/mapclient"
+	ds "github.com/fernandokm/transparencia-de-dominios/server"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	ct "github.com/google/certificate-transparency-go"
 	"github.com/google/certificate-transparency-go/client"
 	"github.com/google/certificate-transparency-go/jsonclient"

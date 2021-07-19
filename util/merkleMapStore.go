@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/fernandokm/domain-transparency/mapstore"
+	"github.com/fernandokm/transparencia-de-dominios/mapstore"
 	"github.com/google/trillian/merkle"
 	"github.com/google/trillian/merkle/rfc6962"
 )

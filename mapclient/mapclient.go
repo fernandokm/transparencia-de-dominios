@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	ds "github.com/fernandokm/domain-transparency/server"
-	"github.com/fernandokm/domain-transparency/util"
+	ds "github.com/fernandokm/transparencia-de-dominios/server"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	"github.com/google/certificate-transparency-go/tls"
 	"github.com/gorilla/schema"
 )

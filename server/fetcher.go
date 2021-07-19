@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	dt "github.com/fernandokm/domain-transparency"
-	"github.com/fernandokm/domain-transparency/util"
+	dt "github.com/fernandokm/transparencia-de-dominios"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	ct "github.com/google/certificate-transparency-go"
 	"github.com/google/certificate-transparency-go/client"
 	"github.com/google/certificate-transparency-go/scanner"

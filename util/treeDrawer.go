@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/fernandokm/domain-transparency/mapstore"
+	"github.com/fernandokm/transparencia-de-dominios/mapstore"
 	"github.com/goccy/go-graphviz"
 	"github.com/goccy/go-graphviz/cgraph"
 	"github.com/lazyledger/smt"

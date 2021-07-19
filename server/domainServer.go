@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	dt "github.com/fernandokm/domain-transparency"
+	dt "github.com/fernandokm/transparencia-de-dominios"
 )
 
 // NewServer creates a new domain server.

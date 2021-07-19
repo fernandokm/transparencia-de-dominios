@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	dt "github.com/fernandokm/domain-transparency"
-	ds "github.com/fernandokm/domain-transparency/server"
-	"github.com/fernandokm/domain-transparency/util"
+	dt "github.com/fernandokm/transparencia-de-dominios"
+	ds "github.com/fernandokm/transparencia-de-dominios/server"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	"github.com/google/certificate-transparency-go/client"
 	"github.com/google/certificate-transparency-go/jsonclient"
 	"github.com/google/certificate-transparency-go/loglist2"

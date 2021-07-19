@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/url"
 
-	dt "github.com/fernandokm/domain-transparency"
-	"github.com/fernandokm/domain-transparency/util"
+	dt "github.com/fernandokm/transparencia-de-dominios"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	"github.com/gorilla/schema"
 )
 

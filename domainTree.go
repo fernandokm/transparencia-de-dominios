@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/fernandokm/domain-transparency/util"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	ct "github.com/google/certificate-transparency-go"
 	"github.com/google/certificate-transparency-go/tls"
 )

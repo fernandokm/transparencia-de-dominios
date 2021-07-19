@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/fernandokm/domain-transparency/util"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	"github.com/google/certificate-transparency-go/logid"
 )
 

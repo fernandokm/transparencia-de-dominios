@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fernandokm/domain-transparency/mapstore"
-	"github.com/fernandokm/domain-transparency/util"
+	"github.com/fernandokm/transparencia-de-dominios/mapstore"
+	"github.com/fernandokm/transparencia-de-dominios/util"
 	ct "github.com/google/certificate-transparency-go"
 	"github.com/google/certificate-transparency-go/tls"
 	"github.com/lazyledger/smt"
