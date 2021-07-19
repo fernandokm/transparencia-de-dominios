@@ -41,8 +41,8 @@ recuperados.
 
 A API é disponibilizada em `127.0.0.1:8021`. Para verificar que ela está
 funcionando, tente carregar a url `http://127.0.0.1:8021/dt/v1/get-smh`.
-Uma lista completa de todas as consultas possíveis pode ser vista em
-[Consultas Disponíveis](#Consultas%20Disponíveis).
+Uma lista completa de todas as consultas possíveis pode ser vista
+[aqui](API.md).
 
 O programa `track-domain` simplifica o processo de verificação
 dos certificados de um domínio. Ele rastreia um mapa de domínios
@@ -51,5 +51,3 @@ e notifica o usuário de quaisquer novos certificados em um dado domínio:
 ```bash
 ./track-domain --domain DOMINIO-DE-INTERESSE
 ```
-
-## Consultas Disponíveis
