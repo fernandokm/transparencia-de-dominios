@@ -10,6 +10,8 @@ A ferramenta de Transparencia de Domínios utiliza a linguagem go.
 Para compilá-la, utilize os seguintes comandos:
 
 ```bash
+git clone https://github.com/fernandokm/transparencia-de-dominios
+cd transparencia-de-dominios
 go build github.com/fernandokm/transparencia-de-dominios/cmd/run-server
 go build github.com/fernandokm/transparencia-de-dominios/cmd/track-domain
 ```
