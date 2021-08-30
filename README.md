@@ -1,8 +1,15 @@
 # Transparência de Domínios
 
-Este é o repositório de Transparência de Domínios. Transparência de Domínios é
+Este é o repositório de Transparência de Domínios (_Domain Transparency_ - DT). Transparência de Domínios é
 um protocolo proposto com o objetivo de facilitar a identificação confiável
 de certificados TLS fraudulentos.
+
+A demonstração dessa ferramenta consistirá principalmente na execução de DT com
+um log fonte que contenha certificados de vários domínios. O servidor de DT permitirá
+então que os usuários busquem apenas os certificados dos domínios de interesse,
+reduzindo a quantidade de dados a serem processados. Além disso, também será
+mostrada a operação do servidor com mais de um log fonte, incluindo a integração
+de DT com o esquema de sharding utilizado em CT.
 
 ## Instalação da Ferramenta
 
@@ -10,6 +17,8 @@ Para instalar a ferramenta num sistema Linux, siga as instruções abaixo:
 
 1. Instale em seu sistema a linguagem Go, versão 1.16 ou superior, conforme
    as [instruções oficiais de instalação](https://golang.org/doc/install).
+   Instale também o programa [git](https://git-scm.com/downloads)
+   (necessário para executar o `git clone` no próximo passo).
 
 2. Para compilar a ferramenta, execute os seguintes comandos no terminal:
 
