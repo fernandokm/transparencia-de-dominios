@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -64,13 +66,14 @@ func main() {
 		fmt.Printf("No logs specified\n")
 		return
 	} else {
-		logClients, err := specsToLogs(logSpecifiers)
+		timestamps, logClients, err := specsToLogs(logSpecifiers)
 		if err != nil {
 			fmt.Printf("Error creating log fetchers: %s\n", err)
 			return
 		}
 		for i, lc := range logClients {
-			go fetcherData(ctx, dm, c, lc, uint64(i))
+			t := timestamps[i]
+			go fetcherData(ctx, t, dm, c, lc, uint64(i))
 		}
 	}
 
@@ -84,29 +87,43 @@ func main() {
 	handleInterrupts(cancel, svr, stopped)
 }
 
-func specsToLogs(specs []string) ([]*loglist2.Log, error) {
+func specsToLogs(specs []string) ([]time.Time, []*loglist2.Log, error) {
 	logClients := make([]*loglist2.Log, len(specs))
+	timestamps := make([]time.Time, len(specs))
 	var err error
 	for i, logSpec := range specs {
-		logClients[i], err = specToLog(logSpec)
+		timestamps[i], logClients[i], err = specToLog(logSpec)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
-	return logClients, nil
+	return timestamps, logClients, nil
 }
 
-func specToLog(logSpec string) (*loglist2.Log, error) {
+func specToLog(logSpec string) (time.Time, *loglist2.Log, error) {
+	t := time.Now()
+	if parts := strings.SplitN(logSpec, ":", 2); len(parts) == 2 {
+		if v, err := strconv.ParseInt(parts[0], 10, 64); err == nil {
+			logSpec = parts[1]
+			t = t.Add(time.Duration(v) * time.Second)
+		}
+	}
 	logs := util.FindLogs(logSpec)
 	if len(logs) > 1 {
-		return nil, fmt.Errorf("ambiguous log specifier %q: got %d matches", logSpec, len(logs))
+		return t, nil, fmt.Errorf("ambiguous log specifier %q: got %d matches", logSpec, len(logs))
 	} else if len(logs) == 0 {
-		return nil, fmt.Errorf("specifier %q was not found in the loglist", logSpec)
+		return t, nil, fmt.Errorf("specifier %q was not found in the loglist", logSpec)
 	}
-	return logs[0], nil
+	return t, logs[0], nil
 }
 
-func fetcherData(ctx context.Context, dm *dt.DomainMap, c chan<- dt.WorkerTransaction, logData *loglist2.Log, logIndex uint64) {
+func fetcherData(ctx context.Context, t time.Time, dm *dt.DomainMap, c chan<- dt.WorkerTransaction, logData *loglist2.Log, logIndex uint64) {
+	// Wait until log is active
+	// If t <= time.Now(), time.Sleep() will return immediately
+	time.Sleep(time.Until(t))
+
+	fmt.Printf("Tracking log %d: %s\n", logIndex, logData.URL)
+
 	lc, err := client.New(logData.URL, http.DefaultClient, jsonclient.Options{PublicKeyDER: logData.Key})
 	if err != nil {
 		log.Panicf("Unexpected error creating log client: %v", err)
