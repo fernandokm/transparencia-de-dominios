@@ -31,6 +31,7 @@ type worker struct {
 	sourceRevisions []LogRevision
 	mapRoot         []byte
 	config          WorkerConfig
+	queue           []WorkerTransaction
 }
 
 func newWorker(dm *DomainMap, config WorkerConfig) *worker {
@@ -41,6 +42,7 @@ func newWorker(dm *DomainMap, config WorkerConfig) *worker {
 		sourceRevisions: smh.SourceLogRevisions[:],
 		mapRoot:         smh.MapRootHash[:],
 		config:          config,
+		queue:           nil,
 	}
 }
 
@@ -86,14 +88,14 @@ func (w *worker) run(ctx context.Context, c <-chan WorkerTransaction) error {
 			}
 			goto publishSHM
 		case t := <-c:
-			if err := w.processTransaction(t); err != nil {
+			if err := w.addToQueueAndProcess(t); err != nil {
 				return err
 			}
 		}
 		continue
 	publishSHM:
 		if w.mapSize == 0 {
-			fmt.Printf("Warning: the MMD expired, but the first STH hasn't been fetched yet. Resetting MMD timer.")
+			fmt.Printf("Warning: the MMD expired, but the first STH hasn't been fetched yet. Resetting MMD timer.\n")
 			continue
 		}
 		err := w.dm.CheckAndPublishSMH(w.mapRoot, w.mapSize, w.sourceRevisions)
@@ -110,19 +112,47 @@ func (w *worker) run(ctx context.Context, c <-chan WorkerTransaction) error {
 	}
 }
 
+func (w *worker) addToQueueAndProcess(t WorkerTransaction) error {
+	tryProcess := func(t WorkerTransaction) (bool, error) {
+		if uint64(len(w.sourceRevisions)) < t.LogIndex {
+			// This condition means that the log at index t.LogIndex-1 hasn't been added yet,
+			// so the log at t.LogIndex cannot yet be added.
+			return false, nil
+		}
+		return true, w.processTransaction(t)
+	}
+	if processed, err := tryProcess(t); err != nil {
+		return err
+	} else if !processed {
+		fmt.Printf("Warning: got new certificates from log %d, but log %d can only be added to the source tree once all previous logs have already been added\n", t.LogIndex, t.LogIndex)
+		w.queue = append(w.queue, t)
+	}
+
+	for i := 0; i < len(w.queue); i++ {
+		tt := w.queue[i]
+		if processed, err := tryProcess(tt); err != nil {
+			return err
+		} else if processed {
+			w.queue = append(w.queue[:i], w.queue[i+1:]...)
+			i -= 1
+		}
+	}
+	return nil
+}
+
 func (w *worker) processTransaction(t WorkerTransaction) error {
-	for uint64(len(w.sourceRevisions)) <= t.LogIndex {
+	if uint64(len(w.sourceRevisions)) == t.LogIndex {
+		fmt.Printf("Adding log %d to the source tree\n", t.LogIndex)
 		w.sourceRevisions = append(w.sourceRevisions, LogRevision{})
+		w.dm.GetSourceTree().AddEntry(t.LogID)
+	} else if uint64(len(w.sourceRevisions)) < t.LogIndex {
+		return fmt.Errorf("attempt to add certificates from log %d when log %d hasn't been added yet", t.LogIndex, len(w.sourceRevisions))
 	}
 	oldRev := w.sourceRevisions[t.LogIndex]
 	newRev := t.LogRevision
 
 	w.mapSize += newRev.TreeSize - oldRev.TreeSize
 	w.sourceRevisions[t.LogIndex] = newRev
-
-	if oldRev.TreeSize == 0 {
-		w.dm.GetSourceTree().AddEntry(t.LogID)
-	}
 
 	for domain, certIndices := range t.NewCertificatesIndices {
 		if len(certIndices) == 0 {

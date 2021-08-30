@@ -58,6 +58,10 @@ o arquivo [util/loglist.json](util/loglist.json) e recompilar a ferramenta.
    ./run-server --log t1:https://link-do-log-1 --log t2:https://link-do-log-2 ...
    ```
 
+   Note que a ordem dos logs no comando é a ordem que aparecerá na árvore fonte.
+   Portanto, logs que entrarão em operação por último devem aparecer no final
+   do comando.
+
    Além de `--log`, as seguintes flags podem ser úteis:
 
    - `--ip IP`: configura o endereço IP do servidor (valor padrão: `127.0.0.1`)
