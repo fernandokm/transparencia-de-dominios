@@ -1,5 +1,8 @@
 # Consultas Disponíveis
 
+Todas as consultas listadas aqui devem ser realizadas como requisições HTTP GET
+para o servidor de DT.
+
 ## Obter a última cabeça de mapa assinada (SMH)
 
 - Consulta: `/dt/v1/get-smh`
