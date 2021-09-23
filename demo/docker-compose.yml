@@ -1,0 +1,76 @@
+version: '3.3'
+
+services:
+  db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: pwd
+      MYSQL_DATABASE: trillian-db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./trillian/storage/mysql/schema/storage.sql:/docker-entrypoint-initdb.d/storage.sql:ro
+
+  trillian-log-server:
+    build:
+      context: trillian
+      dockerfile: examples/deployment/docker/log_server/Dockerfile
+    command:
+      [
+        '--storage_system=mysql',
+        '--mysql_uri=root:pwd@tcp(db:3306)/trillian-db',
+        '--rpc_endpoint=0.0.0.0:8090',
+        '--http_endpoint=0.0.0.0:8091',
+        '--alsologtostderr',
+      ]
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+      - 8091:8091
+    depends_on:
+      - db
+
+  trillian-log-signer:
+    build:
+      context: trillian
+      dockerfile: examples/deployment/docker/log_signer/Dockerfile
+    command:
+      [
+        '--storage_system=mysql',
+        '--mysql_uri=root:pwd@tcp(db:3306)/trillian-db',
+        '--rpc_endpoint=0.0.0.0:8090',
+        '--http_endpoint=0.0.0.0:8091',
+        '--force_master',
+        '--alsologtostderr',
+      ]
+    restart: unless-stopped
+    ports:
+      - 8092:8091
+    depends_on:
+      - db
+
+  ctfe:
+    build:
+      context: certificate-transparency-go
+      dockerfile: trillian/examples/deployment/docker/ctfe/Dockerfile
+    command:
+      [
+        '--http_endpoint=0.0.0.0:6962',
+        '--log_rpc_server=trillian-log-server:8090',
+        '--metrics_endpoint=0.0.0.0:6963',
+        '--log_config=/ctfe-config/ct_server.cfg',
+        '--alsologtostderr',
+      ]
+    restart: unless-stopped
+    ports:
+      - 6962:6962
+      - 6963:6963
+    depends_on:
+      - trillian-log-server
+      - trillian-log-signer
+    volumes:
+      - ./ct_config/ct_server.cfg:/ctfe-config/ct_server.cfg:ro
+      - ./ct_config/ca_cert.pem:/ctfe-config/roots.pem:ro
+      - ./ct_config/ct1_priv.pem:/ctfe-config/ct1_priv.pem:ro
+      - ./ct_config/ct2_priv.pem:/ctfe-config/ct2_priv.pem:ro

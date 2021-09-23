@@ -4,12 +4,7 @@ Este é o repositório de Transparência de Domínios (_Domain Transparency_ - D
 um protocolo proposto com o objetivo de facilitar a identificação confiável
 de certificados TLS fraudulentos.
 
-A demonstração dessa ferramenta consistirá principalmente na execução de DT com
-um log fonte que contenha certificados de vários domínios. O servidor de DT permitirá
-então que os usuários busquem apenas os certificados dos domínios de interesse,
-reduzindo a quantidade de dados a serem processados. Além disso, também será
-mostrada a operação do servidor com mais de um log fonte, incluindo a integração
-de DT com o esquema de sharding utilizado em CT.
+As instruções para a demonstração dessa ferramenta podem ser encontradas [aqui](demo/README.md).
 
 ## Instalação da Ferramenta
 
