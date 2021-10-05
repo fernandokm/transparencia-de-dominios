@@ -3,7 +3,7 @@
 ## Pré-requisitos
 
 Para rodar a demo, além de ter a ferramenta instalada (conforme descrito no
-[README](README.md)), será necessário rodar logs de CT. As instruções para isso
+[README](../README.md)), será necessário rodar logs de CT. As instruções para isso
 são dadas abaixo:
 
 1. Instale em seu sistema o [docker](https://www.docker.com/get-started) e
@@ -91,13 +91,14 @@ Em seguida, inicie o servidor de DT utilizando o seguinte comando em outro termi
 e rode o seguinte comando em outro terminal:
 
 ```bash
+cd demo
 go run ./cmd/add-certificates -part1
 ```
 
 A saída desse último comando deve indicar que estão sendo adicionados certificados
 no log de CT para diversos domínios.
 
-Por fim, execute a ferramenta para rastrear o domínio 1:
+Por fim, execute a ferramenta para rastrear o domínio example-1.com:
 
 ```bash
 ./track-domain --domain example-1.com
@@ -131,10 +132,11 @@ Em seguida, inicie o servidor de DT utilizando o seguinte comando em outro termi
 e rode o seguinte comando em outro terminal:
 
 ```bash
+cd demo
 go run ./cmd/add-certificates -part2
 ```
 
-Por fim, execute a ferramenta para rastrear o domínio 1:
+Por fim, execute a ferramenta para rastrear o domínio example-1.com:
 
 ```bash
 ./track-domain --domain example-1.com
